@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+    <ul>
+        {% if not result %}
+        <li>Invalid symbol!</li>
+        {% else %}
+        <li>The share price of {{ result['name'] }} ({{ result['symbol'] }}) is {{ result['price'] }}</li>
+        {% endif %}
+    </ul> 
+{% endblock %}

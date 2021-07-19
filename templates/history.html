@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    History
+{% endblock %}
+
+{% block main %}
+    {% if not transactions %}
+    <li>None trade</li>
+    {% else %}
+    <h1>Transactions of {{ user_name[0]['username'] }}:</h1>
+    <table>
+        <tr>
+            <th>Stock</th>
+            <th>Ammount</th>
+            <th>Type</th>
+            <th>Time</th>
+        </tr>
+        {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction['symbol'] }}</td>
+                <td>{{ transaction['ammount'] }}</td>
+                <td>{{ transaction['type'] }}</td>
+                <td>{{ transaction['time'] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+        
+    {% endif %}
+{% endblock %}

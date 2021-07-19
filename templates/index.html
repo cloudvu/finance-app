@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Your Stocks
+{% endblock %}
+
+{% block main %}
+    {% if not stocks %}
+    <li>No stocks trade yet</li>
+    {% else %}
+    <h1>Stocks of {{ user_name[0]['username'] }}:</h1>
+    <table>
+        <tr>
+            <th>Stock</th>
+            <th>Ammount</th>
+        </tr>
+        {% for stock in stocks %}
+            <tr>
+                <td>{{ stock['symbol'] }}</td>
+                <td>{{ stock['ammount'] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+        
+    {% endif %}
+{% endblock %}
