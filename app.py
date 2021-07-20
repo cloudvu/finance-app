@@ -98,7 +98,7 @@ def history():
     stocks = db.execute("SELECT symbol, ammount FROM stocks WHERE user_id = ?", session["user_id"])
 
     for stock in stocks:
-        total_value += stock["ammount"] * lookup(stock["symbol"])
+        total_value += stock["ammount"] * lookup(stock["symbol"])['price']
 
     return render_template("history.html", transactions=transactions, user_name=user_name["username"], total_value=total_value)
 
