@@ -4,20 +4,22 @@ from datetime import datetime
 
 db = SQL("sqlite:///finance.db")
 
-def update_database(a, b, c, d, e, f):
+def update_database(a, b, c, d, e, f, g):
     db.execute("CREATE TABLE IF NOT EXISTS history (user_id TEXT NOT NULL, symbol TEXT NOT NULL, ammount INTEGER, currentprice REAL, type TEXT, time TEXT, FOREIGN KEY(user_id) REFERENCES users(id))")
     db.execute("INSERT INTO history (user_id, symbol, ammount, currentprice, type, time) VALUES (?, ?, ?, ?, ?, ?)", a, b, c, d, e, datetime.now())
-    row = db.execute("SELECT cash FROM users WHERE id = ?", a)
+    
+    print(f)
+    print(e)
     if e == "buy":
-        db.execute("UPDATE users SET cash = ? WHERE id = ?", f["cash"] - c * d, a)
+        db.execute("UPDATE users SET cash = ? WHERE id = ?", g["cash"] - c * d, a)
         db.execute("CREATE TABLE IF NOT EXISTS stocks (user_id TEXT NOT NULL, symbol TEXT NOT NULL, ammount INTEGER, FOREIGN KEY(user_id) REFERENCES users(id))")
-
+        row = db.execute("SELECT cash FROM users WHERE id = ?", a)
         if len(row) == 0:
             db.execute("INSERT INTO stocks (user_id, symbol, ammount) VALUES (?, ?, ?)", a, b, c)
         else:
             db.execute("UPDATE stocks SET ammount = ? WHERE symbol = ? AND user_id = ?", c +  f["ammount"], b, a)
     elif e == "sell":
-        db.execute("UPDATE users SET cash = ? WHERE id = ?", f["cash"] + c * d, a)
+        db.execute("UPDATE users SET cash = ? WHERE id = ?", g["cash"] + c * d, a)
         
         db.execute("UPDATE stocks SET ammount = ? WHERE symbol = ? AND user_id = ?", f["ammount"] - c, b, a)
 

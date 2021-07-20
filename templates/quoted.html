@@ -9,7 +9,7 @@
         {% if not result %}
         <li>Invalid symbol!</li>
         {% else %}
-        <li>The share price of {{ result['name'] }} ({{ result['symbol'] }}) is {{ result['price'] }}</li>
+        <li>The share price of {{ result['name'] }} ({{ result['symbol'] }}) is {{ price }}</li>
         {% endif %}
     </ul> 
 {% endblock %}

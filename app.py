@@ -57,9 +57,10 @@ def index():
         return render_template("index.html", user_name=user_name)
 
     stocks = db.execute("SELECT * FROM stocks WHERE user_id = ?", session["user_id"])
+    cash = db.execute("SELECT cash FROM users WHERE id = ?", session["user_id"])
     
     #print(stocks)
-    return render_template("index.html", stocks=stocks, user_name=user_name)
+    return render_template("index.html", stocks=stocks, user_name=user_name, cash=usd(cash[0]['cash']))
 
 
 @app.route("/buy", methods=["GET", "POST"])
@@ -76,12 +77,13 @@ def buy():
         ammount = int(request.form.get('ammount'))
         cost = price * ammount
 
-        current = db.execute("SELECT cash FROM users WHERE id = ?", session["user_id"])
+        current = db.execute("SELECT * FROM stocks WHERE user_id = ?", session["user_id"])
+        current_cash = db.execute("SELECT * FROM users WHERE id = ?", session["user_id"])
         
-        if cost > current[0]["cash"]:
+        if cost > current_cash[0]["cash"]:
             return apology("Not enough money", 999)
         else:
-            update_database(session["user_id"], symbol, ammount, price, "buy", current[0])
+            update_database(session["user_id"], symbol, ammount, price, "buy", current[0], current_cash[0])
             
             return redirect("/")
     else:
@@ -100,7 +102,7 @@ def history():
     for stock in stocks:
         total_value += stock["ammount"] * lookup(stock["symbol"])['price']
 
-    return render_template("history.html", transactions=transactions, user_name=user_name[0]["username"], total_value=total_value)
+    return render_template("history.html", transactions=transactions, user_name=user_name[0]["username"], total_value=usd(total_value))
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -158,7 +160,7 @@ def quote():
         #print(symbol)
         result = lookup(symbol)
         #print(result)
-        return render_template("quoted.html", result = result)
+        return render_template("quoted.html", price=usd(result['price']), result=result)
     else:
         return render_template("quote.html")
 
@@ -206,12 +208,13 @@ def sell():
 
         ammount = int(request.form.get('ammount'))
         cost = price * ammount
-        current = db.execute("SELECT ammount FROM stocks WHERE user_id = ? AND symbol = ?", session["user_id"], symbol)
+        current = db.execute("SELECT * FROM stocks WHERE user_id = ? AND symbol = ?", session["user_id"], symbol)
+        current_cash = db.execute("SELECT * FROM users WHERE id = ?", session["user_id"])
 
         if ammount > current[0]["ammount"] or len(current) == 0:
             return apology("Your stocks are not that high!", 501)
         else:
-            update_database(session["user_id"], symbol, ammount, price, "sell", current[0])
+            update_database(session["user_id"], symbol, ammount, price, "sell", current[0], current_cash[0])
         
         return redirect("/")
 

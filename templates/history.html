@@ -13,16 +13,16 @@
         <tr>
             <th>        Stock       </th>
             <th>       Ammount      </th>
-            <th>Type</th>
-            <th> In-price</th>
-            <th>        Time        </th>
+            <th>         Type       </th>
+            <th>                      In-price                            </th>
+            <th>                          Time                            </th>
         </tr>
         {% for transaction in transactions %}
             <tr>
                 <td>{{ transaction['symbol'] }}</td>
                 <td>{{ transaction['ammount'] }}</td>
                 <td>{{ transaction['type'] }}</td>
-                <td>{{ transaction['currentprice'] }}</td>
+                <td>{{ transaction['currentprice'] | usd }}</td>
                 <td>{{ transaction['time'] }}</td>
 
             </tr>
