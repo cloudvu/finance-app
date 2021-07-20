@@ -7,9 +7,10 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
-from datetime import datetime
+
 
 from helpers import apology, login_required, lookup, usd
+from buysell import update_database
 
 # Configure application
 app = Flask(__name__)
@@ -71,27 +72,16 @@ def buy():
         
         if not request.form.get('ammount').isnumeric() or int(request.form.get('ammount')) % 100 != 0:
             return apology("The ammount is not a valid number, should be a multiple of 100", 501)
+
         ammount = int(request.form.get('ammount'))
-        cost = price * int(ammount)
+        cost = price * ammount
+        
         current = db.execute("SELECT cash FROM users WHERE id = ?", session["user_id"])
-        print(cost)
-        print(current)
+        
         if cost > current[0]["cash"]:
             return apology("Not enough money", 999)
         else:
-            db.execute("CREATE TABLE IF NOT EXISTS history (user_id TEXT NOT NULL, symbol TEXT NOT NULL, ammount INTEGER, currentprice REAL, type TEXT, time TEXT, FOREIGN KEY(user_id) REFERENCES users(id))")
-            db.execute("INSERT INTO history (user_id, symbol, ammount, currentprice, type, time) VALUES (?, ?, ?, ?, ?, ?)", session["user_id"], symbol, ammount, price, "buy", datetime.now())
-
-            db.execute("UPDATE users SET cash = ? WHERE id = ?", current[0]["cash"] - cost, session["user_id"])
-            db.execute("CREATE TABLE IF NOT EXISTS stocks (user_id TEXT NOT NULL, symbol TEXT NOT NULL, ammount INTEGER, FOREIGN KEY(user_id) REFERENCES users(id))")
-
-            row = db.execute("SELECT * FROM stocks WHERE user_id = ? AND symbol = ?", session["user_id"], symbol)
-            if len(row) == 0:
-                db.execute("INSERT INTO stocks (user_id, symbol, ammount) VALUES (?, ?, ?)", session["user_id"], symbol, ammount)
-            else:
-                #print(row[0]["ammount"])
-                ammount += row[0]["ammount"]
-                db.execute("UPDATE stocks SET ammount = ? WHERE symbol = ? AND user_id = ?", ammount, symbol, session["user_id"])
+            update_database(session["user_id"], symbol, ammount, price, "buy", current[0])
             
             return redirect("/")
     else:
@@ -201,7 +191,23 @@ def register():
 @login_required
 def sell():
     """Sell shares of stock"""
-    return apology("TODO")
+    if request.method == "POST":
+        symbol = request.form.get("symbol")
+        price = lookup(symbol)['price']
+
+        if not request.form.get('ammount').isnumeric() or int(request.form.get('ammount')) % 100 != 0:
+            return apology("The ammount is not a valid number, should be a multiple of 100", 501)
+
+        ammount = int(request.form.get('ammount'))
+        cost = price * ammount
+        current = db.execute("SELECT ammount FROM stocks WHERE id = ? AND symbol = ?", session["user_id"], symbol)
+
+        if ammount > current[0]["ammount"] or len(current) == 0:
+            return apology("Your stocks are not that high!", 501)
+        else:
+            update_database(session["user_id"], symbol, ammount, price, "sell", current[0])
+
+    return render_template("sell.html")
 
 
 def errorhandler(e):
