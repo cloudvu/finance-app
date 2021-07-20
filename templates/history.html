@@ -11,10 +11,11 @@
     <h1>Transactions of {{ user_name[0]['username'] }}:</h1>
     <table>
         <tr>
-            <th>Stock</th>
-            <th>Ammount</th>
+            <th>        Stock       </th>
+            <th>       Ammount      </th>
             <th>Type</th>
-            <th>Time</th>
+            <th>Current Price</th>
+            <th>        Time        </th>
         </tr>
         {% for transaction in transactions %}
             <tr>
@@ -26,6 +27,10 @@
 
             </tr>
         {% endfor %}
+        <tr>
+            <td> YOUR TOTAL CURRENT VALUE </td>
+            <td> {{ total_value }} </td>
+        </tr>
     </table>
         
     {% endif %}

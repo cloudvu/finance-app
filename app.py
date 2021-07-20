@@ -75,7 +75,7 @@ def buy():
 
         ammount = int(request.form.get('ammount'))
         cost = price * ammount
-        
+
         current = db.execute("SELECT cash FROM users WHERE id = ?", session["user_id"])
         
         if cost > current[0]["cash"]:
@@ -93,8 +93,14 @@ def buy():
 def history():
     """Show history of transactions"""
     transactions = db.execute("SELECT * FROM history WHERE user_id = ?", session["user_id"])
-    user_name = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])
-    return render_template("history.html", transactions=transactions, user_name=user_name)
+    user_name = db.execute("SELECT username, cash FROM users WHERE id = ?", session["user_id"])
+    total_value = user_name["cash"]
+    stocks = db.execute("SELECT symbol, ammount FROM stocks WHERE id = ?", session["user_id"])
+
+    for stock in stocks:
+        total_value += stock["ammount"] * lookup(stock["symbol"])
+
+    return render_template("history.html", transactions=transactions, user_name=user_name["username"], total_value=total_value)
 
 
 @app.route("/login", methods=["GET", "POST"])
