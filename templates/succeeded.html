@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Succeeded
+{% endblock %}
+
+{% block main %}
+    <h1 align="text-center">Succeeded</h1>
+    <script>
+        function myFunction() {
+        location.replace("/")
+        }
+     
+        setTimeout(function(){ myFunction(); }, 3000);
+     </script>
+{% endblock %}

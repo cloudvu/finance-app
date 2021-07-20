@@ -1,4 +1,6 @@
 import os
+import re
+import time
 from types import TracebackType
 
 from cs50 import SQL
@@ -220,6 +222,42 @@ def sell():
 
     return render_template("sell.html")
 
+@app.route("/deposit", methods=["GET", "POST"])
+@login_required
+def deposit():
+    if request.method == "POST":
+        if not request.form.get("money").isnumeric():
+            return apology("Please enter a valid number of money!!", 501)
+        
+        money = int(request.form.get("money"))
+        current_cash = db.execute("SELECT cash FROM users WHERE id = ?", session["user_id"])
+
+        db.execute("UPDATE users SET cash = ? WHERE id = ?", money + current_cash[0]["cash"], session["user_id"])
+        render_template("succeeded.html")
+        time.sleep(5)
+        return render_template("succeeded.html")
+
+    else:
+        return render_template("deposit.html")
+
+
+@app.route("/password", methods=["GET", "POST"])
+@login_required
+def password():
+    if request.method == "POST":
+        current = db.execute("SELECT hash FROM users WHERE id = ?", session["user_id"])
+        new_hash = generate_password_hash(request.form.get("oldpassword"))
+        
+        if check_password_hash(new_hash, current[0]['hash']) or request.form.get("password") != request.form.get("repassword"):
+            return apology("Old password is not correct or Password does not match with Repassword!", 400)
+        
+        db.execute("UPDATE users SET hash = ? WHERE id = ?", new_hash, session["user_id"])
+        
+        return render_template("succeeded.html")
+
+    else:
+        return render_template("password.html")
+
 
 def errorhandler(e):
     """Handle error"""
@@ -231,4 +269,3 @@ def errorhandler(e):
 # Listen for errors
 for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
-
