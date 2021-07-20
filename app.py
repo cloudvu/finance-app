@@ -206,12 +206,14 @@ def sell():
 
         ammount = int(request.form.get('ammount'))
         cost = price * ammount
-        current = db.execute("SELECT ammount FROM stocks WHERE id = ? AND symbol = ?", session["user_id"], symbol)
+        current = db.execute("SELECT ammount FROM stocks WHERE user_id = ? AND symbol = ?", session["user_id"], symbol)
 
         if ammount > current[0]["ammount"] or len(current) == 0:
             return apology("Your stocks are not that high!", 501)
         else:
             update_database(session["user_id"], symbol, ammount, price, "sell", current[0])
+        
+        return redirect("/")
 
     return render_template("sell.html")
 
