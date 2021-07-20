@@ -94,7 +94,7 @@ def history():
     """Show history of transactions"""
     transactions = db.execute("SELECT * FROM history WHERE user_id = ?", session["user_id"])
     user_name = db.execute("SELECT username, cash FROM users WHERE id = ?", session["user_id"])
-    total_value = user_name["cash"]
+    total_value = user_name[0]["cash"]
     stocks = db.execute("SELECT symbol, ammount FROM stocks WHERE id = ?", session["user_id"])
 
     for stock in stocks:
