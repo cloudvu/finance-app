@@ -246,7 +246,7 @@ def deposit():
 def password():
     if request.method == "POST":
         current = db.execute("SELECT hash FROM users WHERE id = ?", session["user_id"])
-        new_hash = generate_password_hash(request.form.get("oldpassword"))
+        new_hash = generate_password_hash(request.form.get("password"))
         
         if check_password_hash(new_hash, current[0]['hash']) or request.form.get("password") != request.form.get("repassword"):
             return apology("Old password is not correct or Password does not match with Repassword!", 400)
