@@ -100,7 +100,7 @@ def history():
     for stock in stocks:
         total_value += stock["ammount"] * lookup(stock["symbol"])['price']
 
-    return render_template("history.html", transactions=transactions, user_name=user_name["username"], total_value=total_value)
+    return render_template("history.html", transactions=transactions, user_name=user_name[0]["username"], total_value=total_value)
 
 
 @app.route("/login", methods=["GET", "POST"])
