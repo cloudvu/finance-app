@@ -6,7 +6,13 @@
 
 {% block main %}
     {% if not stocks %}
-    <li>No stocks trade yet</li>
+        <h5>No stocks trade yet</h5>
+        <table class="table table-dark">
+            <tr>
+                <td scope="row"> YOUR TOTAL CURRENT VALUE </td>
+                <td> {{ total_value }} </td>
+            </tr>
+        </table>
     {% else %}
     <h1>Stocks of {{ user_name[0]['username'] }}:</h1>
     <table class="table table-striped">
