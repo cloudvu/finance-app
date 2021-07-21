@@ -9,10 +9,10 @@
     <li>No stocks trade yet</li>
     {% else %}
     <h1>Stocks of {{ user_name[0]['username'] }}:</h1>
-    <table align="center">
-        <tr>
-            <th>Stock</th>
-            <th>Ammount</th>
+    <table class="table table-striped">
+        <tr class="thead-dark">
+            <th scope="col">Stock</th>
+            <th scope="col">Ammount</th>
         </tr>
         {% for stock in stocks %}
             {% if not stock['ammount'] %}
@@ -26,7 +26,7 @@
         {% endfor %}
         <tr>
             <td>Your Cash</td>
-            <td>    {{ cash }}      </td>
+            <td>{{ cash }}</td>
         </tr>
 
         <tr>

@@ -9,13 +9,13 @@
     <li>None trade</li>
     {% else %}
     <h1>Transactions of {{ user_name[0]['username'] }}:</h1>
-    <table>
-        <tr>
-            <th>        Stock       </th>
-            <th>       Ammount      </th>
-            <th>         Type       </th>
-            <th>                      In-price                            </th>
-            <th>                          Time                            </th>
+    <table class="table table-striped">
+        <tr class="thead-dark">
+            <th scope="col">Stock</th>
+            <th scope="col">Ammount</th>
+            <th scope="col">Type</th>
+            <th scope="col">In-price</th>
+            <th scope="col">Time</th>
         </tr>
         {% for transaction in transactions %}
             <tr>
