@@ -18,11 +18,11 @@ def update_database(a, b, c, d, e, f, g):
         if len(f) == 0:
             db.execute("INSERT INTO stocks (user_id, symbol, ammount) VALUES (?, ?, ?)", a, b, c)
         else:
-            db.execute("UPDATE stocks SET ammount = ? WHERE symbol = ? AND user_id = ?", c +  f["ammount"], b, a)
+            db.execute("UPDATE stocks SET ammount = ? WHERE symbol = ? AND user_id = ?", c +  f[0]["ammount"], b, a)
 
     elif e == "sell":
         db.execute("UPDATE users SET cash = ? WHERE id = ?", g["cash"] + c * d, a)
         
-        db.execute("UPDATE stocks SET ammount = ? WHERE symbol = ? AND user_id = ?", f["ammount"] - c, b, a)
+        db.execute("UPDATE stocks SET ammount = ? WHERE symbol = ? AND user_id = ?", f[0]["ammount"] - c, b, a)
 
     

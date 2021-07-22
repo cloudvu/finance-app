@@ -92,7 +92,7 @@ def buy():
         if cost > current_cash[0]["cash"]:
             return apology("Not enough money", 999)
         else:
-            update_database(session["user_id"], symbol, ammount, price, "buy", current_stock[0], current_cash[0])
+            update_database(session["user_id"], symbol, ammount, price, "buy", current_stock, current_cash[0])
             
             return redirect("/")
     else:
