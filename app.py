@@ -91,8 +91,6 @@ def buy():
         
         if cost > current_cash[0]["cash"]:
             return apology("Not enough money", 999)
-        elif len(current_stock) == 0:
-            db.execute("INSERT INTO stocks (user_id, symbol, ammount) VALUES (?, ?, ?)", session["user_id"], symbol, ammount)
         else:
             update_database(session["user_id"], symbol, ammount, price, "buy", current_stock[0], current_cash[0])
             
